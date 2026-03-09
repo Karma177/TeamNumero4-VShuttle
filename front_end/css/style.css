@@ -1,0 +1,78 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+    gap: 15px;
+}
+
+/* Sezione STATO: Adesso è la sezione dominante (più lunga) */
+#stato {
+    flex: 2;                 /* Rapporto 2: prende circa il 66% dello spazio */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+}
+/* ... (resto del CSS precedente per body e #stato) ... */
+
+#barra_attivita {
+    flex: 1; 
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Disposizione verticale: bottoni sopra, action sotto */
+    gap: 12px;
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 30px;
+}
+
+/* Contenitore dei bottoni */
+#controlli {
+    display: flex;
+    flex-direction: row;    /* Bottoni affiancati */
+    gap: 10px;
+    flex: 1;                /* Prende 1 parte dello spazio */
+    width: 100%;
+}
+
+#controlli button {
+    flex: 1;                /* Si dividono lo spazio orizzontale al 50% */
+    border: none;
+    border-radius: 15px;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* Sezione ACTION (il "rettangolo" principale) */
+#action {
+    flex: 3;                /* Prende 3 parti dello spazio (la maggior parte) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Stile visivo richiesto */
+    background-color: #2ecc71; /* Un bel verde acceso */
+    color: white;
+    border-radius: 20px;
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+/* Classe per nascondere e far espandere i bottoni */
+.hidden {
+    display: none;          /* Rimuove l'elemento dal layout */
+}
