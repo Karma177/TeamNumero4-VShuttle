@@ -1,135 +1,52 @@
-/**
- * Scambia la visibilità tra il div `#action` e il div `#controlli`.
- * Se viene passato `true` esplicito mostra il `#action` e nasconde i controlli.
- * Se viene passato `false` fa l'opposto. Se non viene passato alcun argomento
- * esegue un toggle basato sull'attuale stato (utile da console).
- *
- * @param {boolean} [mostraAction] - Facoltativo. Se true mostra GO, se false mostra
- *                                   i pulsanti manuali. Se omesso viene invertito lo stato corrente.
- */
-function toggleVisibility(mostraAction) {
-    const actionElement = document.getElementById('action');
-    const controlliElement = document.getElementById('controlli');
+document.addEventListener("DOMContentLoaded", () => {
+    // Selezioniamo il bottone di inizio
+    const btnStartSim = document.querySelector("#startsim button");
 
-    // se non è specificato, inverti lo stato corrente
-    if (typeof mostraAction === 'undefined') {
-        mostraAction = actionElement.classList.contains('hidden');
-    }
+    // Impostiamo la modalità iniziale: Manuale
+    impostaModalita("manuale");
 
-    if (mostraAction) {
-        // mostra il "GO" e nasconde i pulsanti di override
-        actionElement.classList.remove('hidden');
-        controlliElement.classList.add('hidden');
-    } else {
-        // nasconde il "GO" e mostra i pulsanti di override
-        actionElement.classList.add('hidden');
-        controlliElement.classList.remove('hidden');
-    }
-    console.log('action classes:', actionElement.classList);
-    console.log('controlli classes:', controlliElement.classList);
-}
-
-// WebSocket client for simulazione
-let ws;
-
-function initWebSocket() {
-    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-        return; // già connesso o in connessione
-    }
-
-    // imposta l'URL corretto in base all'host corrente
-    const host = window.location.hostname || 'localhost';
-    const port = 8080; // deve corrispondere al server back-end
-    const url = `ws://${host}:${port}/`;
-
-    ws = new WebSocket(url);
-
-    ws.addEventListener('open', () => {
-        console.log('WebSocket aperto su', url);
-        appendStatus('Connesso al server');
+    // Event listener per il click
+    btnStartSim.addEventListener("click", () => {
+        console.log("Passaggio a modalità Simulazione...");
+        impostaModalita("sim");
+        avviaAscoltoServer();
     });
-
-    ws.addEventListener('message', event => {
-        console.log('Messaggio ricevuto:', event.data);
-        appendStatus(event.data);
-    });
-
-    ws.addEventListener('close', () => {
-        console.log('WebSocket chiuso');
-        appendStatus('Connessione chiusa');
-    });
-
-    ws.addEventListener('error', err => {
-        console.error('Errore WebSocket', err);
-        appendStatus('Errore di connessione');
-    });
-}
-
-/**
- * Invia il comando di inizio simulazione al server.
- * Se la connessione non è aperta, la apre prima.
- */
-function startSimulation() {
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-        initWebSocket();
-        // attendo la connessione prima di inviare
-        ws.addEventListener('open', () => {
-            ws.send('inizioSimulazione');
-        }, { once: true });
-    } else {
-        ws.send('inizioSimulazione');
-    }
-}
-
-/**
- * Aggiunge un messaggio nella sezione #stato (sovrascrive o accoda a piacere)
- */
-function appendStatus(text) {
-    const stato = document.getElementById('stato');
-    // sostituisco il contenuto esistente con il nuovo messaggio
-    stato.textContent = text;
-}
-
-// modalità utente: 'manuale' o 'sim'
-let currentMode = 'manuale';
-
-function setMode(mode) {
-    currentMode = mode;
-    const manualEls = document.querySelectorAll('.manuale');
-    const simEls = document.querySelectorAll('.sim');
-
-    if (mode === 'manuale') {
-        manualEls.forEach(el => el.classList.remove('hidden'));
-        simEls.forEach(el => el.classList.add('hidden'));
-    } else if (mode === 'sim') {
-        manualEls.forEach(el => el.classList.add('hidden'));
-        simEls.forEach(el => el.classList.remove('hidden'));
-    }
-}
-
-// apertura automatica al caricamento della pagina
-window.addEventListener('load', () => {
-    initWebSocket();
-
-    // iniziamo in modalità manuale
-    setMode('manuale');
-
-    const actionBtn = document.getElementById('action');
-    if (actionBtn) {
-        actionBtn.addEventListener('click', () => {
-            // al click su GO passa in modalità simulazione e invia richiesta
-            setMode('sim');
-            startSimulation();
-        });
-    }
-
-    const startSimBtn = document.querySelector('#startsim button');
-    if (startSimBtn) {
-        startSimBtn.addEventListener('click', () => {
-            setMode('sim');
-            startSimulation();
-        });
-    }
 });
 
+/**
+ * Gestisce la visibilità degli elementi in base alla modalità
+ * @param {string} modo - 'manuale' o 'sim'
+ */
+function impostaModalita(modo) {
+    const elementiSim = document.querySelectorAll(".sim");
+    const elementiManuale = document.querySelectorAll(".manuale");
 
+    if (modo === "manuale") {
+        elementiSim.forEach(el => el.classList.add("hidden"));
+        elementiManuale.forEach(el => el.classList.remove("hidden"));
+    } else {
+        elementiSim.forEach(el => el.classList.remove("hidden"));
+        elementiManuale.forEach(el => el.classList.add("hidden"));
+    }
+}
+
+/**
+ * Funzione per l'ascolto del server (Esempio WebSocket o Fetch)
+ */
+function avviaAscoltoServer() {
+    console.log("Connessione al server stabilita. In ascolto dati...");
+    
+    // Esempio di logica WebSocket (commentata)
+    /*
+    const socket = new WebSocket('ws://indirizzo-tuo-server:8080');
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Dati ricevuti:", data);
+        // Qui aggiorneresti il div #stato con i dati della macchina
+    };
+    */
+    
+    // Simulazione visiva del server che lavora
+    const statusDiv = document.querySelector("#stato .sim");
+    statusDiv.innerHTML = "📡 Connesso al server... Ricezione dati in corso";
+}
