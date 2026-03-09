@@ -1,25 +1,30 @@
 package it.vshuttle.backend.listener;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.vshuttle.backend.util.CalcolatoreConfidenza;
+import it.vshuttle.backend.util.JsonToSituations;
 import jakarta.websocket.Session;
+
+import java.util.List;
 import java.util.Map;
 
 public class SimulazioneListener {
 
     private static volatile boolean running = false;
+    private static final String SIMULATION_FILENAME = "simulazione.json";
+    
     private Session currentSession;
 
-    // Queste dichiarazioni di interfaccia non servono realmente ma le aggiungo
-    // finché non creerai la vera classe parser e il vero calcolatore
-    // per non far spaccare la compilazione
-    public interface ParserMock {
-        Map<String, Object> toSituations(String filename);
-    }
-    public interface CalcolatoreMock {
-        String calcConfidenza(Object elemento);
-    }
+    private final JsonToSituations parser;
+    private final CalcolatoreConfidenza calcolatore;
+    private final ObjectMapper objectMapper;
 
-    private ParserMock parser;
-    private CalcolatoreMock calcolatoreMock;
+    public SimulazioneListener() {
+        this.parser = new JsonToSituations();
+        this.calcolatore = new CalcolatoreConfidenza();
+        this.objectMapper = new ObjectMapper();
+    }
 
     // Ascolta e gestisce la richiesta di inizio simulazione
     public void onInizioSimulazione(Session session) {
@@ -39,36 +44,40 @@ public class SimulazioneListener {
 
     public void startSimulation() {
         running = true;
-        // Suppongo un filename di prova 
-        String filename = "simulazione.json"; 
-        
-        new Thread(() -> simulationRunner(filename)).start();
+        new Thread(() -> simulationRunner(SIMULATION_FILENAME)).start();
     }
 
     private void simulationRunner(String filename) {
-        if (parser == null || calcolatoreMock == null) {
-            System.out.println("Attesa dell'effettiva implementazione di parser/calcolatore");
-            return;
-        }
-
-        Map<String, Object> situations = parser.toSituations(filename);
-        for (Map.Entry<String, Object> entry : situations.entrySet()) {
-            if (!running) {
-                break;
-            }
-
-            // Calcola la confidenza sulla situazione ricevuta
-            String jsonResult = calcolatoreMock.calcConfidenza(entry.getValue());
+        try {
+            // Otteniamo una lista di situazioni dal parser 
+            List<Map<String, Object>> situations = parser.toSimulations(filename);
             
-            // Invia al client WebSocket
-            send(jsonResult);
+            for (Map<String, Object> situation : situations) {
+                if (!running) {
+                    break;
+                }
 
-            try {
-                Thread.sleep(4000); // utile per scandire i messaggi, modificalo se ti serve
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+                // Calcola la confidenza sulla situazione ricevuta
+                Map<String, Double> risultato = calcolatore.calcConfidenza(situation);
+                
+                // Converte il Map in JSON string "jsonResult" usando Jackson
+                try {
+                    String jsonResult = objectMapper.writeValueAsString(risultato);
+                    // Invia al client WebSocket
+                    send(jsonResult);
+                } catch (JsonProcessingException ex) {
+                    System.err.println("Errore nella serializzazione del JSON: " + ex.getMessage());
+                }
+
+                try {
+                    Thread.sleep(1000); // Pausa di 1 secondo tra un invio e l'altro
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Errore generale durante la simulazione: " + e.getMessage());
         }
     }
 
