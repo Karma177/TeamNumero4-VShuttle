@@ -1,0 +1,59 @@
+ZTL (Zona a Traffico Limitato) Generica (include indicazioni di base e diciture "sperimentale")
+
+ZTL con Fasce Orarie o Giornaliere (include attivazioni diurne, serali, notturne e limitazioni ai soli giorni festivi)
+
+ZTL - Varco Attivo
+
+ZTL - Varco Non Attivo
+
+Fine ZTL
+
+Divieto di Accesso / Senso Vietato
+
+Divieto di Transito Generico
+
+Divieto di Transito per Mezzi Pesanti
+
+Divieto di Transito per Veicoli a Motore
+
+Divieto di Transito / Accesso con Deroghe per Trasporto Pubblico (include eccezioni esplicite per BUS, Taxi e Navette L4)
+
+Divieto di Transito / Accesso con Deroghe Specifiche (include eccezioni per residenti, autorizzati, fornitori a fasce orarie, mezzi di soccorso e veicoli elettrici)
+
+Divieto di Sosta e Fermata (incluse indicazioni di validità 0-24 e rimozione forzata)
+
+Divieto di Affissione
+
+Divieto di Scarico Rifiuti
+
+Limite di Velocità / Zona 30 (include limiti specifici a 10 km/h e 30 km/h)
+
+Lavori in Corso (inclusi preavvisi a 100m)
+
+Area Pedonale
+
+Pericolo Pedoni e Attenzione Bambini (inclusa vicinanza scuole)
+
+Pericolo Strada Dissestata
+
+Pericolo Dosso Artificiale
+
+Pericolo Passaggio a Livello
+
+Rotatoria
+
+Senso Unico Alternato
+
+Strada Senza Uscita
+
+Obbligo di Svolta a Destra
+
+Tutte le Direzioni
+
+Pannello Integrativo: Rallentare
+
+Pannello Informativo: Mercato Rionale (con giorni e orari di validità)
+
+Parcheggio a Pagamento
+
+Segnaletica di Localizzazione e Toponomastica (identificazione di Centro Storico, Stazione Ferroviaria e piazze specifiche)

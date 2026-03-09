@@ -1,0 +1,72 @@
+import java.util.regex.Pattern;
+
+public class OcrCleaner {
+
+    public static String cleanOcrText(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return "";
+        }
+
+        // 1. Normalizzazione iniziale: tutto maiuscolo
+        String text = input.toUpperCase().trim();
+
+        // 2. Rimozione punteggiatura spuria tra lettere (es. V.A.R.C.O. -> VARCO)
+        text = text.replaceAll("(?<=[A-Z])\\.(?=[A-Z])", "");
+
+        // 3. Ricompattamento lettere isolate da spazi (es. D I V I E T O -> DIVIETO)
+        text = text.replaceAll("(?<=\\b[A-Z])\\s+(?=[A-Z]\\b)", "");
+
+        // 4. Gestione degli errori OCR Alfanumerici (Sostituzioni sicure)
+        String[] words = text.split("\\s+");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            // SAFEGUARD: Escludiamo dalle sostituzioni le stringhe che sono palesemente
+            // orari, distanze, velocità o codici specifici legittimi.
+            if (word.matches(".*\\d{2}:\\d{2}.*") || // Orari come 08:00
+                word.matches("\\d+-\\d+") ||        // Fasce come 0-24
+                word.matches("\\d+KM/H") ||         // Velocità
+                word.matches("\\d+M") ||            // Distanze come 100M
+                word.equals("L4") ||                // Codice specifico Navetta
+                word.matches("^\\d+$")) {           // Numeri puri (es. 30)
+                
+                result.append(word).append(" ");
+                continue;
+            }
+
+            // Sostituzione dei caratteri scambiati più comuni
+            String cleanedWord = word
+                    .replace("0", "O")
+                    .replace("1", "I")
+                    .replace("3", "E")
+                    .replace("4", "A")
+                    .replace("5", "S");
+
+            result.append(cleanedWord).append(" ");
+        }
+
+        // 5. Pulizia finale: rimozione spazi multipli e trim
+        return result.toString().replaceAll("\\s{2,}", " ").trim();
+    }
+
+    // --- TEST PRATICO ---
+    public static void main(String[] args) {
+        String[] noisyInputs = {
+            "D1V1ET0 D1 ACCE550",
+            "S3NS0 UN1C0 4LT3RN4T0",
+            "Z T L   V.A.R.C.O.   ATTIVO",
+            "D I V I E T O   D I   T R A N S I T O",
+            "ZTL ATTIVA 08:00 - 20:00", // Non deve alterare gli zeri dell'orario
+            "Z0N4 30 KM/H",             // Deve correggere Z0N4 ma preservare 30
+            "ECCETTO N4VETTE L4"        // Deve correggere N4VETTE ma preservare L4
+        };
+
+        System.out.println("--- TEST PULIZIA OCR ---");
+        for (String noisy : noisyInputs) {
+            String cleaned = cleanOcrText(noisy);
+            System.out.println("Prima : " + noisy);
+            System.out.println("Dopo  : " + cleaned);
+            System.out.println("------------------------");
+        }
+    }
+}
