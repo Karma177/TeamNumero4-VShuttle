@@ -29,4 +29,74 @@ function toggleVisibility(mostraAction) {
     console.log('controlli classes:', controlliElement.classList);
 }
 
+// WebSocket client for simulazione
+let ws;
+
+function initWebSocket() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+        return; // già connesso o in connessione
+    }
+
+    // imposta l'URL corretto in base all'host corrente
+    const host = window.location.hostname || 'localhost';
+    const port = 8080; // deve corrispondere al server back-end
+    const url = `ws://${host}:${port}/`;
+
+    ws = new WebSocket(url);
+
+    ws.addEventListener('open', () => {
+        console.log('WebSocket aperto su', url);
+        appendStatus('Connesso al server');
+    });
+
+    ws.addEventListener('message', event => {
+        console.log('Messaggio ricevuto:', event.data);
+        appendStatus(event.data);
+    });
+
+    ws.addEventListener('close', () => {
+        console.log('WebSocket chiuso');
+        appendStatus('Connessione chiusa');
+    });
+
+    ws.addEventListener('error', err => {
+        console.error('Errore WebSocket', err);
+        appendStatus('Errore di connessione');
+    });
+}
+
+/**
+ * Invia il comando di inizio simulazione al server.
+ * Se la connessione non è aperta, la apre prima.
+ */
+function startSimulation() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        initWebSocket();
+        // attendo la connessione prima di inviare
+        ws.addEventListener('open', () => {
+            ws.send('inizioSimulazione');
+        }, { once: true });
+    } else {
+        ws.send('inizioSimulazione');
+    }
+}
+
+/**
+ * Aggiunge un messaggio nella sezione #stato (sovrascrive o accoda a piacere)
+ */
+function appendStatus(text) {
+    const stato = document.getElementById('stato');
+    // sostituisco il contenuto esistente con il nuovo messaggio
+    stato.textContent = text;
+}
+
+// apertura automatica al caricamento della pagina
+window.addEventListener('load', () => {
+    initWebSocket();
+    const actionBtn = document.getElementById('action');
+    if (actionBtn) {
+        actionBtn.addEventListener('click', startSimulation);
+    }
+});
+
 
