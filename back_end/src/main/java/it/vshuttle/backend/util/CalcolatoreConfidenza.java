@@ -87,7 +87,7 @@ public class CalcolatoreConfidenza {
             String[] sensori = {"camera_frontale", "camera_laterale", "V2I_receiver"};
 
             for (String nomeSensore : sensori) {
-                if (situazione.containsKey(nomeSensore) && situazione.get(nomeSensore) != null) {
+                if (situazione.containsKey(nomeSensore) && situazione.get(nomeSensore) instanceof Map) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> datiSensore = (Map<String, Object>) situazione.get(nomeSensore);
                     
