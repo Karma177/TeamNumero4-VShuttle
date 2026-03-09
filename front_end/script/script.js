@@ -90,12 +90,45 @@ function appendStatus(text) {
     stato.textContent = text;
 }
 
+// modalità utente: 'manuale' o 'sim'
+let currentMode = 'manuale';
+
+function setMode(mode) {
+    currentMode = mode;
+    const manualEls = document.querySelectorAll('.manuale');
+    const simEls = document.querySelectorAll('.sim');
+
+    if (mode === 'manuale') {
+        manualEls.forEach(el => el.classList.remove('hidden'));
+        simEls.forEach(el => el.classList.add('hidden'));
+    } else if (mode === 'sim') {
+        manualEls.forEach(el => el.classList.add('hidden'));
+        simEls.forEach(el => el.classList.remove('hidden'));
+    }
+}
+
 // apertura automatica al caricamento della pagina
 window.addEventListener('load', () => {
     initWebSocket();
+
+    // iniziamo in modalità manuale
+    setMode('manuale');
+
     const actionBtn = document.getElementById('action');
     if (actionBtn) {
-        actionBtn.addEventListener('click', startSimulation);
+        actionBtn.addEventListener('click', () => {
+            // al click su GO passa in modalità simulazione e invia richiesta
+            setMode('sim');
+            startSimulation();
+        });
+    }
+
+    const startSimBtn = document.querySelector('#startsim button');
+    if (startSimBtn) {
+        startSimBtn.addEventListener('click', () => {
+            setMode('sim');
+            startSimulation();
+        });
     }
 });
 
