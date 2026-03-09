@@ -24,9 +24,7 @@ public class GuidaAutonomaWS {
             new CountDownLatch(1).await();
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            server.stop();
-        }
+        } 
     }
 
     @OnMessage

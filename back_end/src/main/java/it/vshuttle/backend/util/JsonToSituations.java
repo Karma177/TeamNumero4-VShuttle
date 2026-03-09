@@ -37,15 +37,10 @@ public class JsonToSituations {
                 throw new IllegalArgumentException("Il file specificato non esiste in resources: " + nomeFileJson);
             }
 
-            JsonNode rootArray = objectMapper.readTree(is);
+            // Deserializza l'intero stream in una lista di mappe
+            simulations = objectMapper.readValue(is, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class));
             
-            if (rootArray.isArray()) {
-                for (JsonNode scenarioNode : rootArray) {
-                    simulations.add(parseSingleScenario(scenarioNode));
-                }
-            } else {
-                throw new IllegalArgumentException("Il file JSON non contiene un array radice valido.");
-            }
+
         } catch (IOException e) {
             System.err.println("Errore di I/O durante la lettura del file: " + e.getMessage());
             throw new RuntimeException("Impossibile processare il file JSON delle simulazioni.", e);
