@@ -1,0 +1,58 @@
+{
+  "livelli_criticita": {
+    "1": {
+      "nome_gruppo": "Sicurezza Vitale",
+      "soglia_confidenza_minima": 0.95,
+      "cartelli": [
+        "Divieto di Accesso / Senso Vietato",
+        "Pericolo Pedoni e Attenzione Bambini",
+        "Pericolo Passaggio a Livello",
+        "Senso Unico Alternato",
+        "Area Pedonale"
+      ]
+    },
+    "2": {
+      "nome_gruppo": "Dinamica del Traffico e Navigazione Sicura",
+      "soglia_confidenza_minima": 0.85,
+      "cartelli": [
+        "Divieto di Transito Generico",
+        "Divieto di Transito per Mezzi Pesanti",
+        "Divieto di Transito per Veicoli a Motore",
+        "Limite di Velocità / Zona 30",
+        "Lavori in Corso",
+        "Pericolo Strada Dissestata",
+        "Pericolo Dosso Artificiale",
+        "Rotatoria",
+        "Strada Senza Uscita",
+        "Obbligo di Svolta a Destra",
+        "Tutte le Direzioni",
+        "Pannello Integrativo: Rallentare"
+      ]
+    },
+    "3": {
+      "nome_gruppo": "Amministrazione, Deroghe e ZTL",
+      "soglia_confidenza_minima": 0.75,
+      "cartelli": [
+        "ZTL (Zona a Traffico Limitato) Generica",
+        "ZTL con Fasce Orarie o Giornaliere",
+        "ZTL - Varco Attivo",
+        "ZTL - Varco Non Attivo",
+        "Fine ZTL",
+        "Divieto di Transito / Accesso con Deroghe per Trasporto Pubblico",
+        "Divieto di Transito / Accesso con Deroghe Specifiche",
+        "Pannello Informativo: Mercato Rionale"
+      ]
+    },
+    "4": {
+      "nome_gruppo": "Informativa e Sosta",
+      "soglia_confidenza_minima": 0.50,
+      "cartelli": [
+        "Divieto di Sosta e Fermata",
+        "Divieto di Affissione",
+        "Divieto di Scarico Rifiuti",
+        "Parcheggio a Pagamento",
+        "Segnaletica di Localizzazione e Toponomastica"
+      ]
+    }
+  }
+}
