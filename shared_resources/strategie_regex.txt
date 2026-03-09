@@ -1,0 +1,17 @@
+1. Analisi degli Errori OCR Target
+
+Alfanumerici confusi (Leet Speak Accidentale): Numeri scambiati per lettere simili a causa di graffi o sporco sul cartello (es. 1 per I, 0 per O, 4 per A, 5 per S).
+
+Spaziatura Frammentata: L'OCR a volte interpreta la crenatura (kerning) ampia come spazi separati, restituendo D I V I E T O invece di DIVIETO.
+
+Punteggiatura Spuria: Punti o virgole inseriti tra le lettere a causa di artefatti visivi o viti sul cartello (es. V.A.R.C.O.).
+
+2. Spiegazione delle Regex
+
+Nel codice utilizzeremo le seguenti espressioni regolari strategiche:
+
+(?<=\b[A-Z])\s+(?=[A-Z]\b): Cattura gli spazi tra lettere singole. Guarda se c'è una lettera maiuscola isolata prima e dopo lo spazio. Sostituendola con una stringa vuota, ricompatta Z T L in ZTL.
+
+(?<=[A-Z])\.(?=[A-Z]): Cattura i punti tra lettere. Controlla (tramite lookbehind e lookahead) la presenza di lettere ai lati del punto per rimuoverlo senza intaccare eventuali formati orari (se presenti).
+
+\s{2,}: Cattura due o più spazi consecutivi. Serve per il cleanup finale, riducendo gli spazi multipli a uno singolo.
