@@ -1,69 +1,99 @@
 
-Ecco il README.md strutturato e formattato in Markdown secondo i criteri richiesti per il progetto "V-Shuttle".
+# Team 4 - V-Shuttle: Parser Semantico e Dashboard di Controllo
 
----
+## 1. Autori
+*   **Mattia Bonfiglio** -> Back End
+*   **Tommaso Mussaldi** -> Front End
+*   **Gregorio Panelli** -> Back End e Logica di Fusione dei Sensori
 
-# V-Shuttle: Dashboard Live e Parser Semantico
+## 2. Descrizione del Progetto e Approccio
 
-## 1. Descrizione del Progetto e Approccio
+Il progetto **V-Shuttle** nasce con l'obiettivo di fornire una soluzione robusta, sicura e scalabile per il monitoraggio e il processo decisionale in tempo reale di navette a guida autonoma. Il problema centrale risolto dal sistema è l'interpretazione affidabile dell'ambiente circostante attraverso un **Parser Semantico** capace di elaborare e fondere flussi di dati eterogenei provenienti da tre fonti distinte: il **Sensore Frontale**, il **Sensore Laterale** e l'**Infrastruttura V2I**.
 
-Il progetto **V-Shuttle** nasce con l'obiettivo di fornire una soluzione robusta, sicura e scalabile per il monitoraggio e il processo decisionale in tempo reale di navette a guida autonoma. Il problema centrale risolto dal sistema è l'interpretazione affidabile dell'ambiente circostante attraverso un **Parser Semantico** capace di elaborare e fondere flussi di dati eterogenei provenienti da tre fonti distinte: il **Sensore Frontale** (rilevamento ostacoli e distanza), il **Sensore Laterale** (prossimità e pedoni) e l'**Infrastruttura V2I** (Vehicle-to-Infrastructure per telemetria semaforica e stradale).
+### Approccio
+Per poter risolvere il problema abbiamo prima discusso ampliamente di quali fossero i requisiti software necessari e di come distribuire i compiti sul team di sviluppo. Siamo giunti alla conclusione che sarebbe stato necessario avere un back end in grado di elaborare la simulazione di ciò che sarebbe successo ricevendo i dati del file json fornito dal problema. 
+Una parte importante di questo problema è decidere come elaborare i dati dei sensori e la loro affidabilità in modo che non si verifichi più il problema iniziale del *phantom braking*. Una volta elaborati i dati, questi sono comunicati al front end che si occupa di mostrarli al driver. Inoltre, si occupa di permettere l'inizio della simulazione e rendere possibile al driver dare la conferma o richiedere l'override nel caso in cui ce ne fosse il bisogno.
 
-L'approccio architetturale si basa su uno stack moderno orientato alle prestazioni: un backend (es. Node.js/Python) dedicato all'ingestione e alla fusione algoritmica dei dati, e una **Dashboard Live** (es. React/Vue) per la visualizzazione immediata della telemetria, dello stato dei sensori e delle decisioni di routing prese dalla navetta, garantendo una user experience fluida e reattiva grazie all'aggiornamento a bassa latenza.
+Una volta decisa la distribuzione dei compiti, abbiamo iniziato a sviluppare con l'aiuto degli LLM ognuno il proprio compito, confrontandoci man mano per assicurarci di rimanere coordinati. La maggior parte del tempo a noi dedicato (circa 3 ore e mezza) è stato concentrato sulla **progettazione di un prodotto robusto** e sull'utilizzo delle IA in modo estremamente mirato e preciso, per rimanere consapevoli di ogni scelta presa durante lo sviluppo.
 
-## 2. Visuals
+*Nota sullo sviluppo dell'interfaccia:*
+L'intenzione originale del team era di sostituire l'attuale interfaccia con una versione più avanzata e completa (il cui riferimento è contenuto nell'archivio `v-shuttle-dashboard.zip` nella cartella risorse), ma a causa dei rigidi limiti di tempo dell'Hackathon non siamo riusciti a completare l'integrazione di quel design specifico.
 
-Di seguito alcune anteprime dell'interfaccia di monitoraggio:
+## 3. Struttura del Repository
 
-*Visualizzazione standard della Dashboard: i 3 sensori trasmettono dati correttamente e la navetta prosegue il percorso pianificato.*
+Il repository è organizzato nelle seguenti cartelle principali:
 
-*Visualizzazione in emergenza: rilevamento di un'anomalia sui sensori e conseguente riadattamento della confidenza del sistema.*
+*   **`back_end/`**: Contiene il codice sorgente Java dell'applicazione server.
+    *   Gestisce la logica di business, il parsing dei dati e la comunicazione WebSocket.
+    *   Le classi principali si trovano in `src/main/java/it/vshuttle/backend/`.
+    *   Include il file `pom.xml` per la gestione delle dipendenze Maven.
+*   **`front_end/`**: Contiene l'interfaccia utente web.
+    *   `index.html`: La pagina principale della dashboard.
+    *   `script/script.js`: Gestisce la connessione WebSocket con il backend e l'aggiornamento dinamico della UI.
+    *   `css/style.css`: Fogli di stile per la presentazione.
+*   **`shared_resources/`**: Risorse condivise e documentazione di supporto.
+    *   File JSON di input per le simulazioni (`VShuttle-input.json`, `simulazione.json`).
+    *   Documentazione sugli algoritmi (`algoritmo_confidenza.md`).
+    *   Design system e risorse grafiche aggiuntive (`v-shuttle-dashboard.zip`).
 
-## 3. Setup Infallibile & Run Instructions
+## 4. Screenshot
 
-L'ambiente di sviluppo e produzione è interamente containerizzato per garantire l'assenza di conflitti e una riproducibilità totale su qualsiasi macchina. Assicurati di avere `Docker` e `Docker Compose` installati.
+> *Nota: Qui sotto è possibile vedere il design target che avremmo voluto implementare.*
 
-Per installare le dipendenze e avviare l'intero stack (Frontend, Backend, eventuale Database), esegui questi esatti comandi nel terminale:
+![Dashboard Mockup](./v-shuttle-dashboard-preview.png)
+![alt text](image.png)
 
-```bash
-# 1. Clona il repository in locale
-git clone https://github.com/Karma177/TeamNumero4-VShuttle.git
-cd TeamNumero4-VShuttle
+![alt text](image-1.png)
 
-# 2. Crea il file delle variabili d'ambiente a partire dall'esempio fornito
-cp .env.example .env
+![alt text](image-2.png)
 
-# 3. Costruisci le immagini Docker e avvia i container in modalità detached
-docker-compose up --build -d
+![alt text](image-3.png)
 
-# 4. Verifica che non ci siano errori nei log di avvio
-docker-compose logs -f
 
-```
+## 5. Istruzioni di Avvio
 
-Una volta terminato l'avvio, la Dashboard Live sarà raggiungibile all'indirizzo `http://localhost:3000`, mentre i servizi di backend risponderanno su `http://localhost:8080`.
+Per avviare il sistema completo nel tuo ambiente locale, segui questi passaggi. Non sono necessari container Docker, ma è richiesto **Java JDK 17+** e **Maven**.
 
-## 4. Logica di Fusione dei Sensori
+### Passo 1: Avvio del Backend
+1.  Apri un terminale nella cartella `back_end`.
+2.  Compila il progetto e installa le dipendenze:
+    ```bash
+    mvn clean install
+    ```
+3.  Avvia il server WebSocket:
+    Puoi eseguire direttamente la classe principale `GuidaAutonomaWS` tramite il tuo IDE o da riga di comando (se il classpath è configurato correttamente), oppure eseguire il jar generato nella cartella `target`.
+    
+    Esempio di avvio rapido (se configurato con plugin exec):
+    ```bash
+    mvn exec:java -Dexec.mainClass="it.vshuttle.backend.GuidaAutonomaWS"
+    ```
+    *Il server si avvierà in ascolto sulla porta 8080 (default).*
+
+### Passo 2: Avvio del Frontend
+1.  Naviga nella cartella `front_end`.
+2.  Apri semplicemente il file `index.html`.
+3.  La dashboard tenterà automaticamente di connettersi a `ws://localhost:8080` per ricevere i dati della simulazione.
+
+## 6. Logica di Fusione dei Sensori
 
 Il cuore del Parser Semantico è l'algoritmo di *Sensor Fusion*, implementato tramite una logica di **Weighted Confidence Voting** (Voto Pesato basato sull'Affidabilità).
-Ogni sensore non si limita a inviare una misurazione ($D_i$), ma allega un indice di confidenza dinamico ($C_i$, compreso tra 0.0 e 1.0) calcolato in base alle condizioni esterne (es. meteo, latenza del segnale).
+Ogni sensore non si limita a inviare una misurazione ($D_i$), ma allega un indice di confidenza dinamico ($C_i$, compreso tra 0.0 e 1.0) calcolato in base alle condizioni esterne.
 
 La decisione aggregata ($R$) non è una media aritmetica semplice, ma massimizza il peso dei sensori più "certi" della propria lettura, seguendo la formula logica trasposta nel codice:
 
 $R = \frac{\sum (D_i \times C_i)}{\sum C_i}$
 
-Il backend applica innanzitutto un filtro passa-alto: i dati con un indice di confidenza inferiore a una specifica soglia di sicurezza (es. $C_i < 0.3$) vengono automaticamente scartati. Sui dati rimanenti viene applicato il calcolo pesato, garantendo che un sensore con segnale nitido abbia sempre la priorità su uno parzialmente oscurato.
+Il backend applica un filtro sui dati con confidenza insufficiente, garantendo che un sensore con segnale nitido abbia sempre la priorità.
 
-## 5. Mappatura Edge Cases
+## 7. Mappatura Edge Cases
 
 La sicurezza delle navette a guida autonoma non ammette tolleranze per le anomalie. Il codice gestisce i casi limite seguendo rigidi paradigmi "fail-safe":
 
-* **Conflitto di Maggioranza (Es: 2 sensori rilevano A, 1 rileva B):**
-Se il Sensore Frontale e il V2I concordano (Strada Libera) ma il Sensore Laterale è in disaccordo (Ostacolo Rilevato), il codice valuta il peso specifico di affidabilità combinata. Tuttavia, per via delle regole intrinseche di safety, se la lettura "minoritaria" rappresenta un pericolo immediato (falso positivo potenziale su un ostacolo), la logica di fusione applica un override di sicurezza e attiva la decelerazione del veicolo. Il "Majority Voting" vince solo in caso di decisioni a pari livello di rischio.
-* **Sensori Offline o Valori Nulli:**
-Se un sensore perde la connessione o invia un payload nullo, l'event handler cattura l'eccezione assegnando forzatamente a quel sensore un livello di confidenza pari a $0.0$. Questo lo esclude matematicamente dalla formula di fusione per evitare divisioni per zero o inquinamento dei dati. Se il numero di sensori attivi e con confidenza $> 0.0$ scende al di sotto di $2$, il sistema innesca immediatamente l'evento di *Emergency Stop* per arrestare la navetta.
+*   **Conflitto di Maggioranza:** Se sensori diversi danno letture discordanti, il sistema valuta il peso specifico di affidabilità. Se una lettura "minoritaria" rappresenta un pericolo immediato, la logica di fusione applica un override di sicurezza.
+*   **Sensori Offline:** Se un sensore perde la connessione, viene escluso matematicamente dalla formula di fusione. Se troppi sensori vanno offline, il sistema innesca l'evento di *Emergency Stop*.
 
-## 6. Schema Architetturale
+## 8. Schema Architetturale
+
 
 Il flusso dei dati sfrutta un'architettura ibrida per garantire prestazioni in tempo reale. Le comunicazioni di stato passano tramite chiamate REST API, mentre la telemetria continua tra il Parser Semantico e la Dashboard fluisce su un tunnel **WebSocket** bidirezionale a bassa latenza.
 
@@ -78,13 +108,11 @@ graph TD
     subgraph Backend Core
         PS -->|Filtro & Pulizia Dati| SF[Motore Sensor Fusion]
         SF -->|Weighted Voting| EM[Emergency Manager]
-        SF -->|Salvataggio Storico| DB[(Database / Time-Series)]
     end
 
     subgraph Frontend
-        SF -- WebSocket Streaming --> DL[Dashboard Live React/Vue]
+        SF -- WebSocket Streaming --> DL[Dashboard Live HTML/JS]
         EM -- WebSocket Alerts --> DL
-        DL -- REST API --> PS
+        DL -- Comandi Utente --> PS
     end
-
 ```
