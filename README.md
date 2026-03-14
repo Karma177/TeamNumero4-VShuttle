@@ -64,7 +64,7 @@ Per avviare il sistema completo nel tuo ambiente locale, segui questi passaggi. 
     
     Esempio di avvio rapido (se configurato con plugin exec):
     ```bash
-    mvn exec:java -Dexec.mainClass="it.vshuttle.backend.GuidaAutonomaWS"
+    mvn exec:java"
     ```
     *Il server si avvierà in ascolto sulla porta 8080 (default).*
 
