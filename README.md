@@ -40,7 +40,6 @@ Il repository è organizzato nelle seguenti cartelle principali:
 
 > *Nota: Qui sotto è possibile vedere il design target che avremmo voluto implementare.*
 
-![Dashboard Mockup](./v-shuttle-dashboard-preview.png)
 ![alt text](image.png)
 
 ![alt text](image-1.png)
